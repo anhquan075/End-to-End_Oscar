@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  oscar:
+    build: ./Oscar
+    restart: on-failure
+    tty: true
+    volumes:
+    - /mlcv/WorkingSpace/Projects/ImageCaptioning/quanna/Oscar:/src/Oscar
+    - /mlcv/Databases/Imagecaption/:/dataset/
+    command: bash src/Oscar/install.sh
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    container_name: mlcv_quanna_oscar_imagecaptioning
+    depends_on:
+    - scene_graph_benchmark
+    - bottom-up-attetion
+
+  scene_graph_benchmark:
+    build: ./scene_graph_benchmark
+    restart: on-failure
+    tty: true
+    volumes:
+    - /mlcv/WorkingSpace/Projects/ImageCaptioning/quanna/scene_graph_benchmark:/src/scene_graph_benchmark
+    - /mlcv/Databases/Imagecaption/:/dataset/
+    command: bash
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    container_name: mlcv_quanna_scene_graph_benchmark_imagecaptioning
+
+  bottom-up-attetion:
+    build: ./bottom-up-attention
+    restart: on-failure
+    tty: true
+    volumes:
+    - /mlcv/WorkingSpace/Projects/ImageCaptioning/quanna/bottom-up-attention:/src/bottom-up-attention
+    - /mlcv/Databases/Imagecaption/:/dataset/
+    command: bash /src/bottom-up-attention/install.sh
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    container_name: mlcv_quanna_bottom_up_attention_imagecaptioning
+  
+    
